@@ -44,9 +44,9 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "src"]
+testpaths = ["tests", "src", "README.md"]
 pythonpath = ["."]
-addopts = ["--doctest-modules", "--strict-markers"]
+addopts = ["--doctest-modules", "--doctest-glob=README.md", "--strict-markers"]
 doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE"]
 
 [tool.coverage.run]
