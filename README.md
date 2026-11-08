@@ -11,6 +11,7 @@ price = (
 )
 
 price(order)  # Decimal('142.5000')
+
 price.explain(order)  # 'bulk 5%'
 ```
 
@@ -77,10 +78,12 @@ The examples in this README build on each other and run as doctests.
 ...     | when(items__ge(10), subtotal * Decimal("0.95"), label="bulk 5%")
 ...     | otherwise(subtotal)
 ... )
+
 >>> price
 Ruleset(gold 20% | bulk 5% | otherwise)
 
 >>> order = Order("regular", Decimal("150.00"), 12)
+
 >>> price(order)
 Decimal('142.5000')
 
@@ -98,12 +101,15 @@ itself.
 ```python
 >>> price.explain(order)
 'bulk 5%'
+
 >>> price.explain(Order("regular", Decimal("60.00"), 1))
 'otherwise'
+
 >>> price.decide(order)
 Branch(condition=..., label='bulk 5%')
 
 >>> unlabelled = when(items__ge(10), subtotal) | otherwise(subtotal)
+
 >>> unlabelled.explain(order), unlabelled
 ('items__ge', Ruleset(items__ge | otherwise))
 
@@ -113,6 +119,7 @@ A condition can return any value: truthy counts as a match.
 
 ```python
 >>> size = when(len, lambda items: f"{len(items)} items") | otherwise(lambda _: "empty")
+
 >>> size([1, 2]), size([])
 ('2 items', 'empty')
 
@@ -126,8 +133,10 @@ type checker flags a call to it, and at run time it fails instead of returning `
 
 ```python
 >>> partial = when(tier__eq("gold"), subtotal * Decimal("0.80"), label="gold")
+
 >>> partial
 PartialRuleset(gold)
+
 >>> partial(order)
 Traceback (most recent call last):
 ...
@@ -144,9 +153,12 @@ the override is easy to drop later.
 
 ```python
 >>> black_friday = when(items__ge(5), subtotal * Decimal("0.70"), label="black friday")
+
 >>> today = black_friday | price
+
 >>> today
 Ruleset(black friday | gold 20% | bulk 5% | otherwise)
+
 >>> today(order), price(order)
 (Decimal('105.0000'), Decimal('142.5000'))
 
@@ -161,11 +173,13 @@ procedure and run it":
 
 ```python
 >>> from pyflowstep import step
+
 >>> @step
 ... def add(total: int, amount: int) -> int:
 ...     return total + amount
 
 >>> bonus = when(lambda n: n >= 100, add(10) >> add(5), label="big") | otherwise(add(0))
+
 >>> bonus(100), bonus(7)
 (115, 7)
 
@@ -198,6 +212,7 @@ pyspecification's `PredicateCompiler` and pyformula's `FormulaCompiler`.
 >>> from pyruleset import RulesetCompiler
 
 >>> rules = {"tier__eq": tier__eq, "items__ge": items__ge}
+
 >>> compiler = RulesetCompiler(
 ...     PredicateCompiler(
 ...         rules,
@@ -216,9 +231,12 @@ pyspecification's `PredicateCompiler` and pyformula's `FormulaCompiler`.
 ...   "otherwise": "subtotal"
 ... }
 ... '''
+
 >>> policy = compiler.compile(json.loads(stored, parse_float=Decimal))
+
 >>> policy
 Ruleset(gold 20% | otherwise)
+
 >>> policy(Order("gold", Decimal("120.00"), 2))
 Decimal('96.0000')
 
@@ -244,7 +262,9 @@ full JSON path, nested paths included (e.g. `at $.branches[1].when.expressions[0
 
 ```python
 >>> from pyspecification import RuleDoesNotExistError
+
 >>> typo = json.loads(stored.replace("tier__eq", "tier__is"), parse_float=Decimal)
+
 >>> try:
 ...     compiler.compile(typo)
 ... except RuleDoesNotExistError as error:
@@ -277,10 +297,14 @@ validate an admin form or to get completion in an editor. The two schemas descri
 >>> from pyruleset import get_ruleset_json_schema
 
 >>> formula_schema = {"anyOf": [{"const": "subtotal"}, {"type": "number"}, {"type": "object"}]}
+
 >>> schema = get_ruleset_json_schema(get_expression_json_schema(rules), formula_schema)
+
 >>> validator = Draft202012Validator(schema)
+
 >>> validator.is_valid(json.loads(stored))
 True
+
 >>> validator.is_valid(json.loads(stored.replace("tier__eq", "tier__is")))
 False
 
@@ -299,9 +323,12 @@ ruleset and add the results:
 ...     when(items__ge(10), lambda _: Decimal("0.00"), label="free shipping")
 ...     | otherwise(lambda _: Decimal("5.00"))
 ... )
+
 >>> def total(order: Order) -> Decimal:
 ...     return price(order) + shipping(order)
+
 >>> small = Order("regular", Decimal("60.00"), 1)
+
 >>> total(small), [price.explain(small), shipping.explain(small)]
 (Decimal('65.00'), ['otherwise', 'otherwise'])
 
