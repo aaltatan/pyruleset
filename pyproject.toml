@@ -1,6 +1,6 @@
 [project]
 name = "pyruleset"
-version = "0.1.2"
+version = "0.1.3"
 description = "Conditional values: pick a value by the first matching condition, composable with | and definable as JSON."
 readme = "README.md"
 authors = [
@@ -44,9 +44,9 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "src", "README.md"]
+testpaths = ["tests", "src"]
 pythonpath = ["."]
-addopts = ["--doctest-modules", "--doctest-glob=README.md", "--strict-markers"]
+addopts = ["--doctest-modules", "--strict-markers"]
 doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE"]
 
 [tool.coverage.run]

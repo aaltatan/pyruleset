@@ -46,47 +46,49 @@ pyflowstep are optional: pyruleset only needs callables.
 
 ## Quick start
 
-The examples in this README build on each other and run as doctests.
+The examples in this README build on each other, top to bottom. Results are shown as comments.
 
 ```python
->>> from dataclasses import dataclass
->>> from decimal import Decimal
->>> from pyformula import variable
->>> from pyspecification import object_rule
->>> from pyruleset import otherwise, when
+from dataclasses import dataclass
+from decimal import Decimal
+from pyformula import variable
+from pyspecification import object_rule
+from pyruleset import otherwise, when
 
->>> @dataclass(frozen=True)
-... class Order:
-...     tier: str
-...     subtotal: Decimal
-...     items: int
 
->>> @object_rule()
-... def tier__eq(order: Order, tier: str) -> bool:
-...     return order.tier == tier
+@dataclass(frozen=True)
+class Order:
+    tier: str
+    subtotal: Decimal
+    items: int
 
->>> @object_rule()
-... def items__ge(order: Order, count: int) -> bool:
-...     return order.items >= count
 
->>> @variable()
-... def subtotal(order: Order) -> Decimal:
-...     return order.subtotal
+@object_rule()
+def tier__eq(order: Order, tier: str) -> bool:
+    return order.tier == tier
 
->>> price = (
-...     when(tier__eq("gold"), subtotal * Decimal("0.80"), label="gold 20%")
-...     | when(items__ge(10), subtotal * Decimal("0.95"), label="bulk 5%")
-...     | otherwise(subtotal)
-... )
 
->>> price
-Ruleset(gold 20% | bulk 5% | otherwise)
+@object_rule()
+def items__ge(order: Order, count: int) -> bool:
+    return order.items >= count
 
->>> order = Order("regular", Decimal("150.00"), 12)
 
->>> price(order)
-Decimal('142.5000')
+@variable()
+def subtotal(order: Order) -> Decimal:
+    return order.subtotal
 
+
+price = (
+    when(tier__eq("gold"), subtotal * Decimal("0.80"), label="gold 20%")
+    | when(items__ge(10), subtotal * Decimal("0.95"), label="bulk 5%")
+    | otherwise(subtotal)
+)
+
+price  # Ruleset(gold 20% | bulk 5% | otherwise)
+
+order = Order("regular", Decimal("150.00"), 12)
+
+price(order)  # Decimal('142.5000')
 ```
 
 Branches are tried in order and the first match wins. Conditions after the match are not
@@ -99,30 +101,23 @@ condition's name, else `"otherwise"`. `decide(subject)` returns the `Branch` (or
 itself.
 
 ```python
->>> price.explain(order)
-'bulk 5%'
+price.explain(order)  # 'bulk 5%'
 
->>> price.explain(Order("regular", Decimal("60.00"), 1))
-'otherwise'
+price.explain(Order("regular", Decimal("60.00"), 1))  # 'otherwise'
 
->>> price.decide(order)
-Branch(condition=..., label='bulk 5%')
+price.decide(order)  # Branch(condition=..., label='bulk 5%')
 
->>> unlabelled = when(items__ge(10), subtotal) | otherwise(subtotal)
+unlabelled = when(items__ge(10), subtotal) | otherwise(subtotal)
 
->>> unlabelled.explain(order), unlabelled
-('items__ge', Ruleset(items__ge | otherwise))
-
+unlabelled.explain(order), unlabelled  # ('items__ge', Ruleset(items__ge | otherwise))
 ```
 
 A condition can return any value: truthy counts as a match.
 
 ```python
->>> size = when(len, lambda items: f"{len(items)} items") | otherwise(lambda _: "empty")
+size = when(len, lambda items: f"{len(items)} items") | otherwise(lambda _: "empty")
 
->>> size([1, 2]), size([])
-('2 items', 'empty')
-
+size([1, 2]), size([])  # ('2 items', 'empty')
 ```
 
 ## A missing fallback is a type error
@@ -132,16 +127,14 @@ type checker flags a call to it, and at run time it fails instead of returning `
 `| otherwise(...)` (or `| ruleset`) makes it callable.
 
 ```python
->>> partial = when(tier__eq("gold"), subtotal * Decimal("0.80"), label="gold")
+partial = when(tier__eq("gold"), subtotal * Decimal("0.80"), label="gold")
 
->>> partial
-PartialRuleset(gold)
+partial  # PartialRuleset(gold)
 
->>> partial(order)
-Traceback (most recent call last):
-...
-TypeError: 'PartialRuleset' object is not callable
-
+try:
+    partial(order)
+except TypeError as error:
+    print(error)  # 'PartialRuleset' object is not callable
 ```
 
 A `Ruleset` is closed: it has no `|`, so nothing can be added after its fallback by accident.
@@ -152,16 +145,13 @@ A `Ruleset` is closed: it has no `|`, so nothing can be added after its fallback
 the override is easy to drop later.
 
 ```python
->>> black_friday = when(items__ge(5), subtotal * Decimal("0.70"), label="black friday")
+black_friday = when(items__ge(5), subtotal * Decimal("0.70"), label="black friday")
 
->>> today = black_friday | price
+today = black_friday | price
 
->>> today
-Ruleset(black friday | gold 20% | bulk 5% | otherwise)
+today  # Ruleset(black friday | gold 20% | bulk 5% | otherwise)
 
->>> today(order), price(order)
-(Decimal('105.0000'), Decimal('142.5000'))
-
+today(order), price(order)  # (Decimal('105.0000'), Decimal('142.5000'))
 ```
 
 Every operator returns a new object; rulesets are frozen dataclasses.
@@ -172,17 +162,17 @@ Values do not have to be formulas. A pyflowstep `Flow` turns the ruleset into "p
 procedure and run it":
 
 ```python
->>> from pyflowstep import step
+from pyflowstep import step
 
->>> @step
-... def add(total: int, amount: int) -> int:
-...     return total + amount
 
->>> bonus = when(lambda n: n >= 100, add(10) >> add(5), label="big") | otherwise(add(0))
+@step
+def add(total: int, amount: int) -> int:
+    return total + amount
 
->>> bonus(100), bonus(7)
-(115, 7)
 
+bonus = when(lambda n: n >= 100, add(10) >> add(5), label="big") | otherwise(add(0))
+
+bonus(100), bonus(7)  # (115, 7)
 ```
 
 ## From JSON
@@ -206,40 +196,37 @@ them to the compilers you pass in: anything with a `compile(definition)` method,
 pyspecification's `PredicateCompiler` and pyformula's `FormulaCompiler`.
 
 ```python
->>> import json
->>> from pyformula import FormulaCompiler
->>> from pyspecification import Predicate, PredicateCompiler
->>> from pyruleset import RulesetCompiler
+import json
+from pyformula import FormulaCompiler
+from pyspecification import Predicate, PredicateCompiler
+from pyruleset import InvalidRulesetDefinitionError, RulesetCompiler
 
->>> rules = {"tier__eq": tier__eq, "items__ge": items__ge}
+rules = {"tier__eq": tier__eq, "items__ge": items__ge}
 
->>> compiler = RulesetCompiler(
-...     PredicateCompiler(
-...         rules,
-...         lambda wrapper: Predicate(lambda _: wrapper["operator"] == "all", operator="logical"),
-...     ),
-...     FormulaCompiler({"subtotal": subtotal}),
-... )
+compiler = RulesetCompiler(
+    PredicateCompiler(
+        rules,
+        lambda wrapper: Predicate(lambda _: wrapper["operator"] == "all", operator="logical"),
+    ),
+    FormulaCompiler({"subtotal": subtotal}),
+)
 
->>> stored = '''
-... {
-...   "branches": [
-...     {"label": "gold 20%",
-...      "when": {"name": "tier__eq", "args": ["gold"], "kwargs": {}, "inverse": false},
-...      "then": {"operator": "multiply", "expressions": ["subtotal", 0.80]}}
-...   ],
-...   "otherwise": "subtotal"
-... }
-... '''
+stored = """
+{
+  "branches": [
+    {"label": "gold 20%",
+     "when": {"name": "tier__eq", "args": ["gold"], "kwargs": {}, "inverse": false},
+     "then": {"operator": "multiply", "expressions": ["subtotal", 0.80]}}
+  ],
+  "otherwise": "subtotal"
+}
+"""
 
->>> policy = compiler.compile(json.loads(stored, parse_float=Decimal))
+policy = compiler.compile(json.loads(stored, parse_float=Decimal))
 
->>> policy
-Ruleset(gold 20% | otherwise)
+policy  # Ruleset(gold 20% | otherwise)
 
->>> policy(Order("gold", Decimal("120.00"), 2))
-Decimal('96.0000')
-
+policy(Order("gold", Decimal("120.00"), 2))  # Decimal('96.0000')
 ```
 
 ### Errors
@@ -250,27 +237,26 @@ A wrong shape raises `InvalidRulesetDefinitionError` (also a `ValueError`) with 
 path:
 
 ```python
->>> compiler.compile({"branches": []})
-Traceback (most recent call last):
-...
-pyruleset.exceptions.InvalidRulesetDefinitionError: Invalid ruleset at $: missing 'otherwise'
-
+try:
+    compiler.compile({"branches": []})
+except InvalidRulesetDefinitionError as error:
+    print(error)  # Invalid ruleset at $: missing 'otherwise'
 ```
 
 Errors from the injected compilers keep their own type. pyruleset only adds a note with the
 full JSON path, nested paths included (e.g. `at $.branches[1].when.expressions[0]`):
 
 ```python
->>> from pyspecification import RuleDoesNotExistError
+from pyspecification import RuleDoesNotExistError
 
->>> typo = json.loads(stored.replace("tier__eq", "tier__is"), parse_float=Decimal)
+typo = json.loads(stored.replace("tier__eq", "tier__is"), parse_float=Decimal)
 
->>> try:
-...     compiler.compile(typo)
-... except RuleDoesNotExistError as error:
-...     print(f"{type(error).__name__}: {error}", error.__notes__)
-RuleDoesNotExistError: Rule 'tier__is' does not exist. Available rules: tier__eq, items__ge ['at $.branches[0].when']
-
+try:
+    compiler.compile(typo)
+except RuleDoesNotExistError as error:
+    print(f"{type(error).__name__}: {error}", error.__notes__)
+    # RuleDoesNotExistError: Rule 'tier__is' does not exist. Available rules: tier__eq, items__ge
+    # ['at $.branches[0].when']
 ```
 
 ## Money
@@ -292,22 +278,19 @@ validate an admin form or to get completion in an editor. The two schemas descri
 `#/$defs/...` refs inside it keep pointing into itself.
 
 ```python
->>> from jsonschema import Draft202012Validator
->>> from pyspecification import get_expression_json_schema
->>> from pyruleset import get_ruleset_json_schema
+from jsonschema import Draft202012Validator
+from pyspecification import get_expression_json_schema
+from pyruleset import get_ruleset_json_schema
 
->>> formula_schema = {"anyOf": [{"const": "subtotal"}, {"type": "number"}, {"type": "object"}]}
+formula_schema = {"anyOf": [{"const": "subtotal"}, {"type": "number"}, {"type": "object"}]}
 
->>> schema = get_ruleset_json_schema(get_expression_json_schema(rules), formula_schema)
+schema = get_ruleset_json_schema(get_expression_json_schema(rules), formula_schema)
 
->>> validator = Draft202012Validator(schema)
+validator = Draft202012Validator(schema)
 
->>> validator.is_valid(json.loads(stored))
-True
+validator.is_valid(json.loads(stored))  # True
 
->>> validator.is_valid(json.loads(stored.replace("tier__eq", "tier__is")))
-False
-
+validator.is_valid(json.loads(stored.replace("tier__eq", "tier__is")))  # False
 ```
 
 `jsonschema` is only used here to show the schema at work; pyruleset does not depend on it.
@@ -319,19 +302,19 @@ stays easy to read and to explain. To stack several decisions, give each part it
 ruleset and add the results:
 
 ```python
->>> shipping = (
-...     when(items__ge(10), lambda _: Decimal("0.00"), label="free shipping")
-...     | otherwise(lambda _: Decimal("5.00"))
-... )
+shipping = when(items__ge(10), lambda _: Decimal("0.00"), label="free shipping") | otherwise(
+    lambda _: Decimal("5.00")
+)
 
->>> def total(order: Order) -> Decimal:
-...     return price(order) + shipping(order)
 
->>> small = Order("regular", Decimal("60.00"), 1)
+def total(order: Order) -> Decimal:
+    return price(order) + shipping(order)
 
->>> total(small), [price.explain(small), shipping.explain(small)]
-(Decimal('65.00'), ['otherwise', 'otherwise'])
 
+small = Order("regular", Decimal("60.00"), 1)
+
+total(small), [price.explain(small), shipping.explain(small)]
+# (Decimal('65.00'), ['otherwise', 'otherwise'])
 ```
 
 Progressive brackets (tax bands) are not a ruleset either: they are a sum of clamped terms,
@@ -375,7 +358,7 @@ uv run python examples/pricing_policy.py
 
 ```bash
 uv sync
-uv run pytest --cov --cov-branch     # tests, doctests in src/ and this README, examples
+uv run pytest --cov --cov-branch     # tests, doctests in src/, README code blocks, examples
 uv run --python 3.13 pytest
 uvx ruff check . && uvx ruff format --check .
 uvx pyright src
