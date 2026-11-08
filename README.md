@@ -55,4 +55,38 @@ policy = compiler.compile(json.loads(stored_policy, parse_float=Decimal))
 }
 ```
 
+## Money
+
+`json.loads` turns `0.80` into a binary float, which then leaks into every `Decimal` it
+touches. Keep money exact in one of two ways:
+
+- Parse with `json.loads(text, parse_float=Decimal)`, so every JSON number with a decimal point
+  becomes a `Decimal` before it reaches the compiler.
+- Or, with pyformula 0.2+, build the value compiler with
+  `FormulaCompiler(variables, literal=decimal_literal)`, which converts each number literal
+  through `str` (`Decimal("0.8")`, not `Decimal(0.8)`), whoever parsed the JSON.
+
+## JSON Schema
+
+`get_ruleset_json_schema(condition_schema, value_schema)` describes a definition for an
+editor or an admin form. The two schemas describe one `when` and one `then`/`otherwise`.
+Each is embedded under its own `$id`, so the `#/$defs/...` refs inside it keep working.
+
+```python
+from pyspecification import get_expression_json_schema
+
+from pyruleset import get_ruleset_json_schema
+
+schema = get_ruleset_json_schema(get_expression_json_schema(rules), formula_schema)
+```
+
+## Examples
+
+- [examples/pricing_policy.py](examples/pricing_policy.py): a JSON policy from an admin panel,
+  rejected on save with the JSON path of a typo, and `explain` for the audit log.
+- [examples/expense_approvals.py](examples/expense_approvals.py): a base approval policy with a
+  temporary override on top (`overrides | policy`).
+- [examples/ticket_routing.py](examples/ticket_routing.py): the matching branch picks a
+  pyflowstep `Flow` that assigns, prioritizes and tags the ticket.
+
 Python 3.12+. Licensed GPL-3.0-only.

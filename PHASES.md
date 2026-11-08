@@ -22,8 +22,8 @@
 - [x] `get_ruleset_json_schema(condition_schema, value_schema)` embedding both sub-schemas, each under its own `$id` (`urn:pyruleset:condition`, `urn:pyruleset:value`) so their internal `#/$defs` refs resolve; validated with `jsonschema` (dev only). Kept in pyruleset, not pyvocabulary: one use, one line
 
 ## Phase 4 — Docs and examples
-- [ ] `examples/`: pricing policy from an admin panel, expense approvals, ticket routing with pyflowstep
-- [ ] README: money section (`parse_float=Decimal`, pyformula `literal=decimal_literal`)
+- [x] `examples/`: pricing policy from an admin panel, expense approvals, ticket routing with pyflowstep (each asserts its results; `tests/test_examples.py` runs them)
+- [x] README: money section (`parse_float=Decimal`, pyformula 0.2+ `literal=decimal_literal`), JSON Schema section, examples list
 
 ## Phase 5 — Release
 - [ ] Create the GitHub repository `aaltatan/pyruleset` and push

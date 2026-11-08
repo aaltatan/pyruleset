@@ -72,6 +72,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "PLR2004", "ANN", "ARG", "INP001", "E501"]
+"examples/**" = ["S101", "T201", "INP001", "PT017"]  # plain scripts that print and assert
 
 [tool.uv.sources]
 # the sibling checkout in ~/dev until pyvocabulary is published on PyPI
