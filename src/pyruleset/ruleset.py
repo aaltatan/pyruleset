@@ -169,6 +169,6 @@ def otherwise[T, V](value: Value[T, V], /) -> Otherwise[T, V]:
 
 def _name_of(function: Callable[..., Any]) -> str:
     # Predicates and formulas print their own name; plain functions use `__name__`.
-    if any("__str__" in vars(cls) for cls in type(function).__mro__[:-1]):
+    if type(function).__str__ is not object.__str__:
         return str(function)
     return getattr(function, "__name__", repr(function))

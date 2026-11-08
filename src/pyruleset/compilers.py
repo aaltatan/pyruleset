@@ -6,7 +6,7 @@ for conditions and pyformula's `FormulaCompiler` for values.
 """
 
 from collections.abc import Mapping
-from typing import Any, NotRequired, Protocol, TypedDict
+from typing import Any, NotRequired, Protocol, TypedDict, cast
 
 from pyvocabulary import index_path, key_path, located
 
@@ -83,7 +83,7 @@ class RulesetCompiler[T, V]:
         path = key_path("$", "branches")
         compiled = tuple(
             self._compile_branch(branch, index_path(path, index))
-            for index, branch in enumerate(branches)
+            for index, branch in enumerate(cast("list[Any]", branches))
         )
         with located(key_path("$", "otherwise"), Exception):
             fallback = self._values.compile(definition["otherwise"])
@@ -111,11 +111,12 @@ def _check_keys(item: Any, *, required: set[str], allowed: set[str], path: str) 
         msg = f"Invalid ruleset at {path}: expected an object, received {item!r}"
         raise InvalidRulesetDefinitionError(msg)
 
-    if missing := sorted(required - item.keys()):
+    keys = set(cast("Mapping[str, Any]", item))
+    if missing := sorted(required - keys):
         msg = f"Invalid ruleset at {path}: missing {', '.join(map(repr, missing))}"
         raise InvalidRulesetDefinitionError(msg)
 
-    if unknown := sorted(item.keys() - allowed):
+    if unknown := sorted(keys - allowed):
         msg = (
             f"Invalid ruleset at {path}: unknown {', '.join(map(repr, unknown))}. "
             f"Allowed keys: {', '.join(sorted(allowed))}"

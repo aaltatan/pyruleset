@@ -8,7 +8,8 @@ price = (
     | when(items__ge(10), subtotal * Decimal("0.95"), label="bulk 5%")
     | otherwise(subtotal)
 )
-price(order); price.explain(order)  # Decimal(...), 'bulk 5%'
+price(order)
+price.explain(order)  # Decimal(...), 'bulk 5%'
 ```
 
 Conditions are any `T -> bool` callable (pyspecification `Predicate`), values any `T -> V`

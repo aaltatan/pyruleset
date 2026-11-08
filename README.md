@@ -15,9 +15,9 @@ price = (
     | otherwise(subtotal)
 )
 
-price(order)          # Decimal('142.5000')
+price(order)  # Decimal('142.5000')
 price.explain(order)  # 'bulk 5%'
-price                 # Ruleset(gold 20% | silver 10% | bulk 5% | otherwise)
+price  # Ruleset(gold 20% | silver 10% | bulk 5% | otherwise)
 ```
 
 Conditions are any `T -> bool` callable, such as a

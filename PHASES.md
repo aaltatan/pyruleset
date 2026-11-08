@@ -15,8 +15,8 @@
 - [x] `RulesetCompiler(conditions, values)` with injected `Compiler` protocols
 - [x] Shape validation with `InvalidRulesetDefinitionError`
 - [x] Full JSON paths on errors from injected compilers (via `pyvocabulary.located`)
-- [x] 46 tests on Python 3.12 and 3.13, including integration with pyspecification, pyformula and pyflowstep; ruff and `mypy --strict` clean
-- [ ] Measure branch coverage
+- [x] 46 tests on Python 3.12 and 3.13, including integration with pyspecification, pyformula and pyflowstep; ruff and pyright strict clean
+- [x] Measure branch coverage: 100% lines and branches (114 statements, 20 branches)
 
 ## Phase 3 — JSON Schema
 - [ ] `get_ruleset_json_schema(condition_schema, value_schema)` embedding both sub-schemas (needs `$id` handling in pyvocabulary)
