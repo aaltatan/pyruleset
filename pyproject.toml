@@ -1,6 +1,6 @@
 [project]
 name = "pyruleset"
-version = "0.1.3"
+version = "0.1.4"
 description = "Conditional values: pick a value by the first matching condition, composable with | and definable as JSON."
 readme = "README.md"
 authors = [
@@ -9,7 +9,7 @@ authors = [
 license = "GPL-3.0-only"
 requires-python = ">=3.12"
 dependencies = [
-    "pyvocabulary>=0.1.0",
+    "pyvocabulary>=0.1.3",
 ]
 keywords = ["rules", "decision-table", "policy", "conditional", "json", "dsl", "composition"]
 classifiers = [
@@ -36,9 +36,9 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "jsonschema>=4.26.0",
-    "pyflowstep>=0.6.0",
-    "pyformula>=0.1.1",
-    "pyspecification>=2.0.2",
+    "pyflowstep>=0.7.1",
+    "pyformula>=0.2.0",
+    "pyspecification>=4.1.0",
     "pytest>=9.1.1",
     "pytest-cov>=6.0",
 ]
@@ -73,10 +73,6 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "PLR2004", "ANN", "ARG", "INP001", "E501"]
 "examples/**" = ["S101", "T201", "INP001", "PT017"]  # plain scripts that print and assert
-
-[tool.uv.sources]
-# the sibling checkout in ~/dev until pyvocabulary is published on PyPI
-pyvocabulary = { path = "../pyvocabulary", editable = true }
 
 [tool.pyright]
 venvPath = "."

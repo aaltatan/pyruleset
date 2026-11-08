@@ -85,7 +85,7 @@ class TestErrors:
         with pytest.raises(Exception, match="subtotall") as info:
             compiler.compile(policy)
 
-        assert info.value.__notes__ == ["at $.branches[0].then"]
+        assert info.value.__notes__ == ["at $.branches[0].then.expressions[0]"]
 
     def test_bad_fallback_gets_the_path(self, compiler, policy):
         policy["otherwise"] = "nope"

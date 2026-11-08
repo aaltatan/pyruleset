@@ -196,23 +196,27 @@ wheels = [
 
 [[package]]
 name = "pyflowstep"
-version = "0.7.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyargprocessors" },
+    { name = "pyvocabulary" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/20/9a/6d9893211d5d9729466b9266b614b5ac304744181708e86c2681aeda6ccb/pyflowstep-0.7.0.tar.gz", hash = "sha256:bf5ddca64a16e17f58917a338203e8ecfaf4b3b7fbadc49eb671361f53bdbaa2", size = 42531, upload-time = "2026-10-25T18:02:07.702Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e0/39/c69a4330de473cad971974a129766c3b5984cfbba4512d21ee0baf400444/pyflowstep-0.7.1.tar.gz", hash = "sha256:e57d40dc59ee6a4cae387a4753379a788e7291de1c8937f7dc4a5261ab1109ae", size = 41038, upload-time = "2026-11-08T04:31:51.236Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/3d/4a8dfac1853038dacc22c2cfc9c1eb7770e8b830668f64bd88198073aa70/pyflowstep-0.7.0-py3-none-any.whl", hash = "sha256:2d1e333f7470e692d41de421cccd19c534019f849499acada84bb65dc1b692e2", size = 36561, upload-time = "2026-10-25T18:02:06.195Z" },
+    { url = "https://files.pythonhosted.org/packages/9a/5f/1d948b2a3e46b491e837bd2931a784da8a40baf55c302ca8a5e25ef939f7/pyflowstep-0.7.1-py3-none-any.whl", hash = "sha256:f82e5e2ab3cbdc92fd3762bed533f071c6ef748e57b75c8f74b35a959f9f1f4d", size = 35364, upload-time = "2026-11-08T04:31:49.258Z" },
 ]
 
 [[package]]
 name = "pyformula"
-version = "0.1.1"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9c/01/a44717e222585ca48f9bd0feef08f2e0fb37ca812064698ea73b0df5297a/pyformula-0.1.1.tar.gz", hash = "sha256:271967274c9940cc4301c62826bf771b792afd09933afc5c8244875cbdefc2b5", size = 15174, upload-time = "2026-09-24T06:20:49.394Z" }
+dependencies = [
+    { name = "pyvocabulary" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/92/26/b85f1af663598fa4624faa49803b54f5a5e9b1baf0fef731ccec87f0f5c2/pyformula-0.2.0.tar.gz", hash = "sha256:85cc2019072c97e3cd5bd6e7216101ff0b97d9fd92a7dae34f487227d5332f74", size = 17536, upload-time = "2026-11-08T04:31:33.232Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/5f/149cf85692fd65e4f50a71554063d973a8deb11637577c68ca47d924ef1b/pyformula-0.1.1-py3-none-any.whl", hash = "sha256:493e68ebd7fb365f19af687fb975666898722b962eab5cca4344fd418ec9e8bd", size = 18981, upload-time = "2026-09-24T06:20:48.324Z" },
+    { url = "https://files.pythonhosted.org/packages/27/50/d77a278d6499b5a98ca7cd58b28e877b41cc5c6a051cf04824c7bed51cb9/pyformula-0.2.0-py3-none-any.whl", hash = "sha256:8da72a34eaf342a9fee09284bf96d623a380938f58095da95afd0a660cbb44c3", size = 20536, upload-time = "2026-11-08T04:31:31.191Z" },
 ]
 
 [[package]]
@@ -226,7 +230,7 @@ wheels = [
 
 [[package]]
 name = "pyruleset"
-version = "0.1.3"
+version = "0.1.4"
 source = { editable = "." }
 dependencies = [
     { name = "pyvocabulary" },
@@ -243,28 +247,29 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pyvocabulary", editable = "../pyvocabulary" }]
+requires-dist = [{ name = "pyvocabulary", specifier = ">=0.1.3" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "jsonschema", specifier = ">=4.26.0" },
-    { name = "pyflowstep", specifier = ">=0.6.0" },
-    { name = "pyformula", specifier = ">=0.1.1" },
-    { name = "pyspecification", specifier = ">=2.0.2" },
+    { name = "pyflowstep", specifier = ">=0.7.1" },
+    { name = "pyformula", specifier = ">=0.2.0" },
+    { name = "pyspecification", specifier = ">=4.1.0" },
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "pytest-cov", specifier = ">=6.0" },
 ]
 
 [[package]]
 name = "pyspecification"
-version = "4.0.0"
+version = "4.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyargprocessors" },
+    { name = "pyvocabulary" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b2/1d/572caefe796c150b116b397f087f017e974510aa5a3c8bbe0a93f783c233/pyspecification-4.0.0.tar.gz", hash = "sha256:095d3750dc2ff1eeb14ca1d33ffe409b06202bbe729d42bc65b435bc387a0a1e", size = 28483, upload-time = "2026-10-09T08:16:45.156Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/31/fb700ec6b5a2f27f24a2d56cbb13d38f3fcd78282b3b9a49c3a70a08b91d/pyspecification-4.1.0.tar.gz", hash = "sha256:ad27388c038f3bfa6a79ec045bbaa371cf0708a571dc48d92161c215b1462c9f", size = 30041, upload-time = "2026-11-08T04:31:11.606Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/73/e3c42d66f49a76b4cde786570ee789d86ecbdd991786057e92374414ac75/pyspecification-4.0.0-py3-none-any.whl", hash = "sha256:0a0269cd1abcc72e2bf9cd24cb54fe5776d45434fc3ebf153aad0a13ef053fb4", size = 25820, upload-time = "2026-10-09T08:16:43.763Z" },
+    { url = "https://files.pythonhosted.org/packages/78/92/7da5fa38dbd4983c945e1281cbdcf49cc1a718f64aafb897bfcee07eee26/pyspecification-4.1.0-py3-none-any.whl", hash = "sha256:61405e92d533d3707ccf0ddf0bb9ec5147f2bdb370c136a5ac0190c4e794e2a7", size = 26131, upload-time = "2026-11-08T04:31:09.043Z" },
 ]
 
 [[package]]
@@ -299,19 +304,14 @@ wheels = [
 
 [[package]]
 name = "pyvocabulary"
-version = "0.1.2"
-source = { editable = "../pyvocabulary" }
+version = "0.1.3"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyargprocessors" },
 ]
-
-[package.metadata]
-requires-dist = [{ name = "pyargprocessors", specifier = ">=0.1.0" }]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=9.1.1" },
-    { name = "pytest-cov", specifier = ">=6.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/b0/6c/7e76cdd457df0ab22bd7390f85af365b7f2d88043586348158a26a3ee40a/pyvocabulary-0.1.3.tar.gz", hash = "sha256:fabe060a4b9d5065a6da41b2e792d2deba056be9baf33848f8e2f15bc4c9525d", size = 14568, upload-time = "2026-11-08T15:54:30.385Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/02/77/27ca6c7a0d47bda191f4b9356c0e32b0e5635af0caaa981e788a648318cc/pyvocabulary-0.1.3-py3-none-any.whl", hash = "sha256:cae6247b22eac07d01935ec4c1dd4b4e7f02e0b8dc2ea22dd244fdf86a3e128f", size = 16038, upload-time = "2026-11-08T15:54:29.227Z" },
 ]
 
 [[package]]
