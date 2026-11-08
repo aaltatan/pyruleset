@@ -1,6 +1,6 @@
 [project]
 name = "pyruleset"
-version = "0.1.0"
+version = "0.1.1"
 description = "Conditional values: pick a value by the first matching condition, composable with | and definable as JSON."
 readme = "README.md"
 authors = [
