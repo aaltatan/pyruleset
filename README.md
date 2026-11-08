@@ -29,16 +29,14 @@ Conditions are any `T -> bool` callable, such as a
 
 ## Installation
 
-pyruleset is not on PyPI yet. Install it from GitHub:
-
 ```bash
-pip install git+https://github.com/aaltatan/pyruleset
+pip install pyruleset
 ```
 
 or with uv:
 
 ```bash
-uv add git+https://github.com/aaltatan/pyruleset
+uv add pyruleset
 ```
 
 Python 3.12+. The only runtime dependency is

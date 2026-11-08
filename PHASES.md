@@ -26,6 +26,6 @@
 - [x] README: money section (`parse_float=Decimal`, pyformula 0.2+ `literal=decimal_literal`), JSON Schema section, examples list
 
 ## Phase 5 — Release
-- [ ] Create the GitHub repository `aaltatan/pyruleset` and push
-- [ ] CI on 3.12 and 3.13; publish after pyvocabulary is on PyPI
-- [ ] Confirm the PyPI name `pyruleset` is free just before publishing
+- [x] Create the GitHub repository `aaltatan/pyruleset` and push
+- [x] Publish 0.1.0 on PyPI (after pyvocabulary 0.1.0); README installs with `pip install pyruleset`
+- [ ] CI on 3.12 and 3.13

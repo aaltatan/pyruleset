@@ -28,8 +28,8 @@ errors, and a JSON Schema generated from signatures.
 | pyspecification | `T -> bool` | `&` `\|` `~` | released |
 | pyformula | `T -> number` | arithmetic operators | released |
 | pyflowstep | `T -> T` | `>>` | released |
-| pyvocabulary | shared core: `Vocabulary`, JSON Schema, path notes | — | 0.1 built, not published |
-| pyruleset | `T -> V`, first match wins | `\|` | 0.1 built, not published |
+| pyvocabulary | shared core: `Vocabulary`, JSON Schema, path notes | — | released |
+| pyruleset | `T -> V`, first match wins | `\|` | released |
 | pyordering | `T -> sort key` | `>>`, `~` | planned |
 | pyaggregation | `Iterable[T] -> dict` | `&` | planned |
 | pyprojection | `T -> dict` | `&` | planned |
@@ -56,8 +56,10 @@ The package is `pyruleset` under `src/`, built with `uv_build`.
 - `when(...) | when(...)` is a `PartialRuleset` with no `__call__`; only `| otherwise(...)`
   (or `| ruleset`) gives a callable `Ruleset`. A missing fallback is a type error.
 - `partial | ruleset` puts the partial's branches first: overrides on top of a base policy.
-- First match only. Stacking is a pyformula sum of rulesets; progressive brackets are a
-  pyformula sum of clamped terms. Do not add an "all matches" mode.
+- First match only. Stack decisions by adding the results of separate rulesets in a plain
+  function (`price(o) + shipping(o)`): pyformula's `+` does not accept a `Ruleset` (it treats
+  it as a constant and raises `TypeError`). Progressive brackets are a sum of clamped terms.
+  Do not add an "all matches" mode.
 - `explain(subject) -> str` returns the branch label (or the condition name, or `"otherwise"`).
   `decide(subject)` returns the `Branch` or `Otherwise` itself.
 - Compiler errors from injected compilers keep their type; pyruleset only adds the full JSON
