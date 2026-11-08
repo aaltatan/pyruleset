@@ -19,7 +19,7 @@
 - [x] Measure branch coverage: 100% lines and branches (114 statements, 20 branches)
 
 ## Phase 3 — JSON Schema
-- [ ] `get_ruleset_json_schema(condition_schema, value_schema)` embedding both sub-schemas (needs `$id` handling in pyvocabulary)
+- [x] `get_ruleset_json_schema(condition_schema, value_schema)` embedding both sub-schemas, each under its own `$id` (`urn:pyruleset:condition`, `urn:pyruleset:value`) so their internal `#/$defs` refs resolve; validated with `jsonschema` (dev only). Kept in pyruleset, not pyvocabulary: one use, one line
 
 ## Phase 4 — Docs and examples
 - [ ] `examples/`: pricing policy from an admin panel, expense approvals, ticket routing with pyflowstep

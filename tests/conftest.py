@@ -71,13 +71,17 @@ def price_ruleset():
 
 
 @pytest.fixture
-def condition_compiler() -> PredicateCompiler[Order, bool]:
-    rules = {
+def rules():
+    return {
         "tier__eq": tier__eq,
         "subtotal__ge": subtotal__ge,
         "items__ge": items__ge,
         "coupon__eq": coupon__eq,
     }
+
+
+@pytest.fixture
+def condition_compiler(rules) -> PredicateCompiler[Order, bool]:
     return PredicateCompiler[Order, bool](
         rules,
         lambda wrapper: Predicate(lambda _: wrapper["operator"] == "all", operator="logical"),
