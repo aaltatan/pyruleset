@@ -1,0 +1,77 @@
+[project]
+name = "pyruleset"
+version = "0.1.0"
+description = "Conditional values: pick a value by the first matching condition, composable with | and definable as JSON."
+readme = "README.md"
+authors = [
+    { name = "aaltatan", email = "a.altatan@gmail.com" }
+]
+license = "GPL-3.0-only"
+requires-python = ">=3.12"
+dependencies = [
+    "pyvocabulary>=0.1.0",
+]
+keywords = ["rules", "decision-table", "policy", "conditional", "json", "dsl", "composition"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/aaltatan/pyruleset"
+Repository = "https://github.com/aaltatan/pyruleset"
+Issues = "https://github.com/aaltatan/pyruleset/issues"
+
+[build-system]
+requires = ["uv_build>=0.11.32,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pyflowstep>=0.6.0",
+    "pyformula>=0.1.1",
+    "pyspecification>=2.0.2",
+    "pytest>=9.1.1",
+    "pytest-cov>=6.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src"]
+pythonpath = ["."]
+addopts = ["--doctest-modules", "--strict-markers"]
+doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE"]
+
+[tool.coverage.run]
+source = ["pyruleset"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ["@overload", "if TYPE_CHECKING:"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812",  # conflicts with the formatter
+    "CPY001",  # no per-file copyright headers
+    "D100", "D101", "D102", "D103", "D104", "D105", "D107", "D203", "D213",
+    "ANN401",  # JSON definitions and condition results genuinely are `Any`
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR2004", "ANN", "ARG", "INP001", "E501"]
+
+[tool.uv.sources]
+# the sibling checkout in ~/dev until pyvocabulary is published on PyPI
+pyvocabulary = { path = "../pyvocabulary", editable = true }
