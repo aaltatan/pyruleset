@@ -37,8 +37,8 @@ build-backend = "uv_build"
 dev = [
     "jsonschema>=4.26.0",
     "pyflowstep>=0.7.1",
-    "pyformula>=0.2.0",
-    "pyspecification>=4.1.0",
+    "pyformula>=0.3.0",
+    "pyspecification>=4.2.0",
     "pytest>=9.1.1",
     "pytest-cov>=6.0",
 ]

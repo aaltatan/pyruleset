@@ -33,4 +33,4 @@
 ## Phase 6 — Rulesets inside formulas (rulify)
 - [x] `WhenCompiler(conditions, values, *, wrap=)`: `{"when": <ruleset>}` nodes at any depth in a value, moved out of salariez's `SalariezCompiler`; still no runtime dependency on pyformula
 - [x] `get_when_json_schema(condition_schema)` for pyformula's `nodes=`; `x-kind: "ruleset"` on the root and on the inner ruleset; `describe`, `is_when_node`; 0.2.0 (branch `feat/when-node`, not published)
-- [ ] After pyvocabulary 0.2.0, pyformula 0.3.0 and pyspecification 4.2.0 are on PyPI: raise the dev bounds, publish 0.2.0
+- [x] After pyvocabulary 0.2.0, pyformula 0.3.0 and pyspecification 4.2.0 are on PyPI: raise the dev bounds, publish 0.2.0
