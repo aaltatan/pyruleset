@@ -85,7 +85,11 @@ class TestRulesetJsonSchema:
 
     def test_label_must_be_a_string(self, validator, policy):
         policy["branches"][0]["label"] = 3
-        assert "3 is not of type 'string'" in errors(validator, policy)
+        assert "3 is not of type 'string', 'null'" in errors(validator, policy)
+
+    def test_null_label_is_valid_like_the_compiler_accepts_it(self, validator, policy):
+        policy["branches"][0]["label"] = None
+        assert validator.is_valid(policy)
 
     def test_input_schemas_are_not_changed(self, rules):
         condition = get_expression_json_schema(rules)

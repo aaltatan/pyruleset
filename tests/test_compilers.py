@@ -50,6 +50,10 @@ class TestCompiling:
         del policy["branches"][0]["label"]
         assert compiler.compile(policy).explain(orders["gold"]) == "tier__eq"
 
+    def test_null_label_means_no_label(self, compiler, policy, orders):
+        policy["branches"][0]["label"] = None
+        assert compiler.compile(policy).explain(orders["gold"]) == "tier__eq"
+
     def test_branches_are_optional(self, compiler, orders):
         assert compiler.compile({"otherwise": "subtotal"})(orders["gold"]) == Decimal("120.00")
 

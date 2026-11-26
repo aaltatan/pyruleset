@@ -95,7 +95,7 @@ def _embedded(schema: Mapping[str, Any], schema_id: str) -> dict[str, Any]:
 def _ruleset(condition: dict[str, Any], value: dict[str, Any]) -> dict[str, Any]:
     branch = {
         "type": "object",
-        "properties": {"when": condition, "then": value, "label": {"type": "string"}},
+        "properties": {"when": condition, "then": value, "label": {"type": ["string", "null"]}},
         "required": ["when", "then"],
         "additionalProperties": False,
     }

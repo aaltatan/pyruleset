@@ -20,7 +20,7 @@ _RULESET_KEYS = {"branches", "otherwise"}
 class BranchDict(TypedDict):
     when: Any
     then: Any
-    label: NotRequired[str]
+    label: NotRequired[str | None]
 
 
 class RulesetDict(TypedDict):
