@@ -28,6 +28,7 @@ classifiers = [
 Homepage = "https://github.com/aaltatan/pyruleset"
 Repository = "https://github.com/aaltatan/pyruleset"
 Issues = "https://github.com/aaltatan/pyruleset/issues"
+Documentation = "https://aaltatan.github.io/pyruleset/"
 
 [build-system]
 requires = ["uv_build>=0.11.32,<0.12.0"]
@@ -41,6 +42,9 @@ dev = [
     "pyspecification>=4.2.0",
     "pytest>=9.1.1",
     "pytest-cov>=6.0",
+]
+docs = [
+    "mkdocs-material>=9.8.2",
 ]
 
 [tool.pytest.ini_options]

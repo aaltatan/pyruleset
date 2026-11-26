@@ -1,0 +1,87 @@
+site_name: pyruleset
+site_description: Conditional values - the first matching branch decides - composable with | and definable as JSON.
+site_url: https://aaltatan.github.io/pyruleset/
+repo_url: https://github.com/aaltatan/pyruleset
+repo_name: aaltatan/pyruleset
+edit_uri: edit/main/docs/
+copyright: GPL-3.0-only
+
+theme:
+  name: material
+  icon:
+    logo: material/source-branch
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: lime
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: lime
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+    - toc.follow
+
+nav:
+  - Home: index.md
+  - Installation: install.md
+  - User guide:
+      - guide/index.md
+      - Rulesets: guide/rulesets.md
+      - Deciding and explaining: guide/explaining.md
+      - Composing and overrides: guide/composing.md
+      - Compiling from JSON: guide/compiling.md
+      - Rulesets inside values: guide/nested.md
+      - JSON Schema: guide/json-schema.md
+      - With the family: guide/family.md
+  - Recipes: recipes.md
+  - Reference:
+      - reference/index.md
+      - API: reference/api.md
+      - Definition format: reference/definition-format.md
+      - Exceptions: reference/exceptions.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/aaltatan/pyruleset
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/pyruleset/
