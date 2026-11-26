@@ -294,6 +294,78 @@ validator.is_valid(json.loads(stored.replace("tier__eq", "tier__is")))  # False
 ```
 
 `jsonschema` is only used here to show the schema at work; pyruleset does not depend on it.
+The schema root has `x-kind: "ruleset"`, for editors such as rulify.
+
+## Rulesets inside formulas
+
+A value can hold a ruleset where a number would go: "the subtotal minus whatever the
+discount ruleset decides". In JSON that is a `{"when": <ruleset>}` node, at any depth:
+
+```json
+{"operator": "subtract", "expressions": ["subtotal", {"when": {"branches": [...], "otherwise": 0}}]}
+```
+
+`WhenCompiler` compiles each `when` node, puts a generated name (`__when_0`) in its place,
+and builds the value compiler from those names with a function you pass, so pyruleset still
+knows nothing about formulas. `wrap=Formula` turns each ruleset into a pyformula `Formula`
+named after its branches, so the result reads like the definition.
+
+```python
+from pyformula import Formula, decimal_literal, get_formula_json_schema
+from pyruleset import WhenCompiler, get_when_json_schema
+
+values = WhenCompiler(
+    PredicateCompiler(
+        rules,
+        lambda wrapper: Predicate(lambda _: wrapper["operator"] == "all", operator="logical"),
+    ),
+    lambda names: FormulaCompiler({"subtotal": subtotal, **names}, literal=decimal_literal),
+    wrap=Formula,
+)
+
+discounted = values.compile(
+    {
+        "operator": "subtract",
+        "expressions": [
+            "subtotal",
+            {
+                "when": {
+                    "branches": [
+                        {
+                            "label": "gold",
+                            "when": {
+                                "name": "tier__eq",
+                                "args": ["gold"],
+                                "kwargs": {},
+                                "inverse": False,
+                            },
+                            "then": {"operator": "multiply", "expressions": ["subtotal", 0.2]},
+                        }
+                    ],
+                    "otherwise": 0,
+                }
+            },
+        ],
+    }
+)
+
+str(discounted)  # '(subtotal - when(gold -> (subtotal * 0.2) | otherwise -> 0))'
+
+discounted(Order("gold", Decimal("120.00"), 2))  # Decimal('96.000')
+```
+
+`get_when_json_schema(condition_schema)` is the schema of the node; add it to the value
+schema, whose `$ref: "#"` it uses for `then` and `otherwise`:
+
+```python
+predicates = get_expression_json_schema(rules)
+
+formulas = get_formula_json_schema({"subtotal": subtotal}, nodes=[get_when_json_schema(predicates)])
+
+nested = Draft202012Validator(get_ruleset_json_schema(predicates, formulas))
+
+nested.is_valid({"otherwise": {"when": {"branches": [], "otherwise": "subtotal"}}})  # True
+```
 
 ## First match only
 
@@ -351,6 +423,11 @@ uv run python examples/pricing_policy.py
 | `Compiler[F]` | protocol | Anything with `compile(definition, /) -> F` |
 | `RulesetDict`, `BranchDict` | type | `TypedDict`s of the JSON shape |
 | `get_ruleset_json_schema(condition_schema, value_schema, /) -> dict` | function | JSON Schema of a definition |
+| `WhenCompiler(conditions, values, /, *, wrap=None)` | class | `compile(definition) -> Value`, with `{"when": <ruleset>}` nodes at any depth |
+| `Wrap[T, V]` | protocol | `wrap(ruleset, /, *, name) -> Value`, e.g. pyformula's `Formula` |
+| `get_when_json_schema(condition_schema, /) -> dict` | function | JSON Schema of a `{"when": <ruleset>}` node |
+| `describe(ruleset, /) -> str` | function | `"when(gold -> (subtotal * 0.2) \| otherwise -> 0)"` |
+| `is_when_node(node, /) -> bool` | function | Whether a JSON value is a `{"when": ...}` node |
 | `PyrulesetError` | exception | Base class of pyruleset's errors |
 | `InvalidRulesetDefinitionError` | exception | Wrong definition shape; also a `ValueError` |
 

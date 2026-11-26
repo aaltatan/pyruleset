@@ -7,7 +7,8 @@ Pick a value by the first condition that matches. Conditions are any
 
 from .compilers import BranchDict, Compiler, RulesetCompiler, RulesetDict
 from .exceptions import InvalidRulesetDefinitionError, PyrulesetError
-from .json_schema import get_ruleset_json_schema
+from .json_schema import get_ruleset_json_schema, get_when_json_schema
+from .nested import WhenCompiler, Wrap, describe, is_when_node
 from .ruleset import (
     FALLBACK_LABEL,
     Branch,
@@ -34,7 +35,12 @@ __all__ = [
     "RulesetCompiler",
     "RulesetDict",
     "Value",
+    "WhenCompiler",
+    "Wrap",
+    "describe",
     "get_ruleset_json_schema",
+    "get_when_json_schema",
+    "is_when_node",
     "otherwise",
     "when",
 ]
