@@ -44,8 +44,8 @@ def get_ruleset_json_schema(
         "$schema": JSON_SCHEMA_DIALECT,
         **_ruleset({"$ref": CONDITION_SCHEMA_ID}, {"$ref": VALUE_SCHEMA_ID}),
         "$defs": {
-            "condition": {**condition_schema, "$id": CONDITION_SCHEMA_ID},
-            "value": {**value_schema, "$id": VALUE_SCHEMA_ID},
+            "condition": _embedded(condition_schema, CONDITION_SCHEMA_ID),
+            "value": _embedded(value_schema, VALUE_SCHEMA_ID),
         },
     }
 
@@ -74,8 +74,22 @@ def get_when_json_schema(condition_schema: Mapping[str, Any], /) -> dict[str, An
         "properties": {"when": _ruleset({"$ref": WHEN_CONDITION_SCHEMA_ID}, {"$ref": "#"})},
         "required": ["when"],
         "additionalProperties": False,
-        "$defs": {"when-condition": {**condition_schema, "$id": WHEN_CONDITION_SCHEMA_ID}},
+        "$defs": {"when-condition": _embedded(condition_schema, WHEN_CONDITION_SCHEMA_ID)},
     }
+
+
+def _embedded(schema: Mapping[str, Any], schema_id: str) -> dict[str, Any]:
+    """Return `schema` as its own resource under `schema_id`.
+
+    A root `$ref` moves into `allOf`, which means the same: Ajv overflows its stack on an
+    embedded resource whose root is a bare `$ref`, as pyspecification's and pyformula's are.
+    """
+    embedded = {**schema, "$id": schema_id}
+
+    if "$ref" in embedded:
+        embedded["allOf"] = [*embedded.get("allOf", []), {"$ref": embedded.pop("$ref")}]
+
+    return embedded
 
 
 def _ruleset(condition: dict[str, Any], value: dict[str, Any]) -> dict[str, Any]:

@@ -93,3 +93,21 @@ class TestRulesetJsonSchema:
         get_ruleset_json_schema(condition, FORMULA_SCHEMA)
         assert json.dumps(condition) == before
         assert "$id" not in FORMULA_SCHEMA
+
+
+class TestEmbedding:
+    def test_a_root_ref_moves_into_all_of(self, rules):
+        expression = get_expression_json_schema(rules)
+        schema = get_ruleset_json_schema(expression, FORMULA_SCHEMA)
+        condition = schema["$defs"]["condition"]
+
+        assert "$ref" not in condition
+        assert condition["allOf"] == [{"$ref": "#/$defs/expression"}]
+        assert condition["$id"] == "urn:pyruleset:condition"
+
+    def test_existing_all_of_is_kept(self):
+        schema = get_ruleset_json_schema(
+            {"allOf": [{"type": "object"}], "$ref": "#/$defs/x", "$defs": {"x": {}}}, {}
+        )
+
+        assert schema["$defs"]["condition"]["allOf"] == [{"type": "object"}, {"$ref": "#/$defs/x"}]
