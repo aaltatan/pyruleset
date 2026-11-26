@@ -1,5 +1,7 @@
 # pyruleset
 
+**Documentation: <https://aaltatan.github.io/pyruleset/>**
+
 Conditional values that compose with `|` and can be defined as JSON: the first branch whose
 condition matches decides.
 
@@ -430,6 +432,7 @@ uv run python examples/pricing_policy.py
 | `is_when_node(node, /) -> bool` | function | Whether a JSON value is a `{"when": ...}` node |
 | `PyrulesetError` | exception | Base class of pyruleset's errors |
 | `InvalidRulesetDefinitionError` | exception | Wrong definition shape; also a `ValueError` |
+| `InvalidRulesetError` | exception | `when`/`otherwise` got something not callable, e.g. `otherwise(0)`; also a `TypeError` |
 
 ## Development
 

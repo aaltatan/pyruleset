@@ -12,3 +12,7 @@ class PyrulesetError(Exception):
 
 class InvalidRulesetDefinitionError(PyrulesetError, ValueError):
     """Raised when a ruleset definition does not have the expected shape."""
+
+
+class InvalidRulesetError(PyrulesetError, TypeError):
+    """Raised when `when` or `otherwise` gets a condition or value that is not callable."""

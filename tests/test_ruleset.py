@@ -4,7 +4,16 @@ from decimal import Decimal
 import pytest
 from pyflowstep import step
 
-from pyruleset import Branch, Otherwise, PartialRuleset, Ruleset, otherwise, when
+from pyruleset import (
+    Branch,
+    InvalidRulesetError,
+    Otherwise,
+    PartialRuleset,
+    PyrulesetError,
+    Ruleset,
+    otherwise,
+    when,
+)
 from tests.conftest import subtotal, tier__eq
 
 
@@ -153,3 +162,21 @@ class TestRepr:
                 return number > 0
 
         assert repr(when(Positive(), identity)).startswith("PartialRuleset(<")
+
+
+class TestFailEarly:
+    @pytest.mark.parametrize(
+        ("build", "match"),
+        [
+            (lambda: when(0, abs), r"condition of when\(\) must be callable, received 0"),
+            (lambda: when(bool, 5), r"value of when\(\) must be callable, received 5"),
+            (lambda: otherwise(0), r"value of otherwise\(\) must be callable, received 0"),
+        ],
+    )
+    def test_a_constant_is_rejected_when_the_ruleset_is_built(self, build, match):
+        with pytest.raises(InvalidRulesetError, match=match):
+            build()
+
+    def test_invalid_ruleset_error_is_a_type_error(self):
+        assert issubclass(InvalidRulesetError, TypeError)
+        assert issubclass(InvalidRulesetError, PyrulesetError)

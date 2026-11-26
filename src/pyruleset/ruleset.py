@@ -16,6 +16,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, overload
 
+from .exceptions import InvalidRulesetError
+
 type Condition[T] = Callable[[T], Any]
 type Value[T, V] = Callable[[T], V]
 
@@ -149,7 +151,13 @@ def when[T, V](
         value: Computes the result, e.g. a pyformula `Formula` or a pyflowstep `Flow`.
         label: Names the branch in `explain` and `repr`. Defaults to the condition's name.
 
+    Raises:
+        InvalidRulesetError: If `condition` or `value` is not callable, e.g. a constant.
+
     """
+    _check_callable(condition, "condition of when()")
+    _check_callable(value, "value of when()")
+
     return PartialRuleset((Branch(condition, value, label),))
 
 
@@ -163,8 +171,24 @@ def otherwise[T, V](value: Value[T, V], /) -> Otherwise[T, V]:
 
     ```
 
+    Raises:
+        InvalidRulesetError: If `value` is not callable, e.g. `otherwise(0)`; write
+            `otherwise(lambda _: 0)`.
+
     """
+    _check_callable(value, "value of otherwise()")
+
     return Otherwise(value)
+
+
+def _check_callable(function: object, what: str) -> None:
+    # Fail when the ruleset is built, not when a rare branch is first reached.
+    if not callable(function):
+        msg = (
+            f"The {what} must be callable, received {function!r}. "
+            f"Wrap a constant: lambda _: {function!r}"
+        )
+        raise InvalidRulesetError(msg)
 
 
 def _name_of(function: Callable[..., Any]) -> str:

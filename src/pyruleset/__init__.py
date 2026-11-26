@@ -6,7 +6,7 @@ Pick a value by the first condition that matches. Conditions are any
 """
 
 from .compilers import BranchDict, Compiler, RulesetCompiler, RulesetDict
-from .exceptions import InvalidRulesetDefinitionError, PyrulesetError
+from .exceptions import InvalidRulesetDefinitionError, InvalidRulesetError, PyrulesetError
 from .json_schema import get_ruleset_json_schema, get_when_json_schema
 from .nested import WhenCompiler, Wrap, describe, is_when_node
 from .ruleset import (
@@ -28,6 +28,7 @@ __all__ = [
     "Compiler",
     "Condition",
     "InvalidRulesetDefinitionError",
+    "InvalidRulesetError",
     "Otherwise",
     "PartialRuleset",
     "PyrulesetError",
