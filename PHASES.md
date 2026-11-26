@@ -35,4 +35,4 @@
 - [x] `get_when_json_schema(condition_schema)` for pyformula's `nodes=`; `x-kind: "ruleset"` on the root and on the inner ruleset; `describe`, `is_when_node`; 0.2.0 (branch `feat/when-node`, not published)
 - [x] After pyvocabulary 0.2.0, pyformula 0.3.0 and pyspecification 4.2.0 are on PyPI: raise the dev bounds, publish 0.2.0
 - [x] Ajv: an embedded sub-schema's root `$ref` moves into `allOf` (Ajv overflows on a bare root `$ref` in an embedded resource); 0.2.1 (branch `fix/ajv-embedding`)
-- [ ] Publish 0.2.1
+- [x] Publish 0.2.1
